@@ -1,14 +1,18 @@
 #ifndef CAR_H
 #define CAR_H
 
+#include <string>
+
 class Car {
 private:
-    float speed; //Car's speed
-    float acceleration;//Car's acceleration
-    float handling;//Car's handling
+    std::string name; //Car's Team Name
+    float speed; //Car's Speed
+    float acceleration;//Car's Acceleration
+    float handling;//Car's Handling
 public:
-    Car(float speed, float acceleration, float handling);//Defines construction for car's information
+    Car(std::string name, float speed, float acceleration, float handling);//Defines construction for car's information
     //Getters
+    std::string getName() const;
     float getSpeed() const;
     float getAcceleration() const;
     float getHandling() const;

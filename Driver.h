@@ -9,7 +9,7 @@ class Driver {
 private:
     std::string name; //Driver's Name
     int age; //Driver's age
-    std::vector<float> skillLevels; //Driver's different skill levels
+    std::vector<float> skillLevels; //Driver's different skill levels (Speed, Handling, and Stamina(will affect fatigue))
     Car* car; //Pointer to car
 public:
     Driver(std::string name, int age, const std::vector<float>& skillLevels, Car* car); //Defines construction for driver's information
