@@ -7,15 +7,17 @@
 
 class Driver {
 private:
-    std::string name; //Driver's Name
-    std::string team; //Driver's Team
-    int age; //Driver's age
-    int speed; //Speed skill
-    int handling; //Handling skill
-    int stamina; //Stamina skill
-    Car* car; //Pointer to car
-    int number; //Driver's number for grid selection
+    // Driver properties
+    std::string name; 
+    std::string team; 
+    int age; 
+    int speed; 
+    int handling; 
+    int stamina; 
+    Car* car; 
+    int number; 
 public:
+    // Overall performance score
     virtual double performanceRating() const {
         return (speed + handling) * (stamina / 100.0);
     }

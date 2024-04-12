@@ -19,7 +19,7 @@ void convertTime(double totalTimeInSeconds, int& minutes, int& seconds, int& mil
     milliseconds = static_cast<int>((totalTimeInSeconds - static_cast<int>(totalTimeInSeconds)) * 1000);
 }
 
-// Overloaded function
+
 std::string convertTime(double totalTimeInSeconds) {
     int minutes, seconds, milliseconds;
     convertTime(totalTimeInSeconds, minutes, seconds, milliseconds);
@@ -37,7 +37,7 @@ int main() {
 
     int trackChoice = 0;
     bool validTrack = false;
-
+    // User track selection
     while (!validTrack) {
         std::cout << "Select a track:\n";
         for (int i = 0; i < tracks.size(); ++i) {
@@ -76,12 +76,12 @@ int main() {
             startingGrid.push_back(*it);
         } else {
             std::cout << "Invalid number. Please enter a valid pre-assigned number.\n";
-            --i; // Decrease counter to retry the same position
+            --i; 
         }
     }
 
     std::vector<std::pair<std::string, std::pair<double, std::vector<double>>>> driverTimes;
-
+    // Race Simulation
     for (auto& driver : startingGrid) {
         double totalRaceTime = 0;
         std::vector<double> lapTimes;
@@ -108,13 +108,12 @@ int main() {
     char showDetails;
     std::cout << "Do you want to see detailed lap times for each driver? (Y/N): ";
     std::cin >> showDetails;
-
+    
+    // Display race results and optional detailed lap times
     std::cout << "\nFinishing Order:\n";
     for (auto& [name, nestedPair] : driverTimes) {
-        // Display total race time
         std::cout << name << " - Total Race Time: " << convertTime(nestedPair.first) << "\n";
 
-        // Check if detailed lap times are requested
         if (showDetails == 'Y' || showDetails == 'y') {
             std::cout << "Detailed Lap Times for " << name << ":\n";
             for (size_t i = 0; i < nestedPair.second.size(); ++i) {
@@ -123,7 +122,6 @@ int main() {
             }
         }
 
-        // Calculating and displaying fastest and average lap times
         double fastestLap = *std::min_element(nestedPair.second.begin(), nestedPair.second.end());
         std::cout << "Fastest Lap: " << convertTime(fastestLap) << "\n";
 

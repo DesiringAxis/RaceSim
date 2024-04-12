@@ -1,14 +1,14 @@
 #include "Driver.h"
 
-// Default constructor definition
+
 Driver::Driver() : name(""), team(""), age(0), speed(0), handling(0), stamina(0), car(nullptr), number(0) {}
 
-//Constructor for Driver's info
+
 Driver::Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car)
     : name(name), team(team), age(age), speed(speed), handling(handling), stamina(stamina), car(car) {}
 
 Driver::Driver(std::string name, int number) : name(name), number(number) {}
-//Returns Driver's info when called
+
 
 std::string Driver::getName() const {
     return name;
@@ -46,7 +46,7 @@ void Driver::setNumber(int num) {
     number = num;
 }
 
-//Constructor for Team info
+    // Creates team and adds driver
 Team::Team(const std::string& name) : name(name) {}
 void Team::addDriver(const Driver& driver) {
     drivers.push_back(driver);
@@ -72,7 +72,7 @@ std::vector<Team> initializeF1Teams() {
     Team mclaren("McLaren");
     Team astonMartin("Aston Martin");
 
-    //Drivers (Name, Team, Age, Speed, Handling, Stamina, Car)
+    //Adds driver to a team
     mercedes.addDriver(Driver("Lewis Hamilton", "Mercedes", 39, 10, 9, 8, mercedesCar1));
     mercedes.addDriver(Driver("George Russell", "Mercedes", 26, 8, 8, 9, mercedesCar2));
     mclaren.addDriver(Driver("Lando Norris", "McLaren", 24, 9, 7, 8, mclarenCar1));
@@ -89,14 +89,14 @@ bool Driver::operator==(const Driver& other) const {
 }
 std::vector<Driver> initializeDrivers() {
     std::vector<Driver> allDrivers;
-    auto teams = initializeF1Teams(); // Initialize teams and their drivers
+    auto teams = initializeF1Teams(); 
 
     for (const Team& team : teams) {
-        auto teamDrivers = team.getDrivers(); // Get drivers from each team
-        allDrivers.insert(allDrivers.end(), teamDrivers.begin(), teamDrivers.end()); // Aggregate drivers
+        auto teamDrivers = team.getDrivers(); 
+        allDrivers.insert(allDrivers.end(), teamDrivers.begin(), teamDrivers.end()); 
     }
 
-    // Assign numbers from 1 to 6 to each driver
+    
     for (size_t i = 0; i < allDrivers.size(); ++i) {
         allDrivers[i].setNumber(i + 1);
     }
