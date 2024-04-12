@@ -30,10 +30,10 @@ int main() {
 
     Track selectedTrack = tracks[trackChoice - 1];
 
-    // Display drivers with numbers for user selection
-    std::cout << "Select drivers for the starting grid. Enter the number corresponding to each driver:\n";
-    for (int i = 0; i < drivers.size(); ++i) {
-        std::cout << (i + 1) << ". " << drivers[i].getName() << "\n";
+   // Display drivers with pre-assigned numbers for user selection
+    std::cout << "Enter the number for drivers in the starting grid order:\n";
+    for (const auto& driver : drivers) {
+        std::cout << driver.getNumber() << ". " << driver.getName() << "\n";
     }
 
     // Initialize a vector to store the starting grid based on user selections
@@ -41,20 +41,22 @@ int main() {
 
     // User inputs numbers to select drivers for the starting grid
     for (size_t i = 0; i < startingGrid.size(); ++i) {
-        std::cout << "Enter the number for position " << (i + 1) << " in the grid: ";
-        int driverIndex;
-        std::cin >> driverIndex;
+        std::cout << "Enter the pre-assigned number for position " << (i + 1) << " in the grid: ";
+        int driverNumber;
+        std::cin >> driverNumber;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
-        // Validate the input number
-        if (driverIndex < 1 || driverIndex > static_cast<int>(drivers.size())) {
-            std::cout << "Invalid number. Please enter a number between 1 and " << drivers.size() << ".\n";
-            --i; // Decrement to retry input for the same grid position
-            continue;
-        }
+        // Validate the input number by searching for the driver with that number
+        auto it = std::find_if(drivers.begin(), drivers.end(), [driverNumber](const Driver& d) {
+            return d.getNumber() == driverNumber;
+        });
 
-        // Assign the selected driver to the corresponding position in the starting grid
-        startingGrid[i] = drivers[driverIndex - 1];
+        if (it != drivers.end()) {
+            startingGrid[i] = *it; // Add driver to the starting grid
+        } else {
+            std::cout << "Invalid number. Please enter a valid pre-assigned number.\n";
+            --i; // Decrement to retry input for the same grid position
+        }
     }
     std::vector<std::pair<std::string, float>> driverTimes; // Pair of driver name and total race time, including starting advantage
     float sumLapTimes = 0;

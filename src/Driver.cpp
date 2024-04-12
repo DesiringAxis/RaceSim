@@ -33,6 +33,14 @@ Car* Driver::getCar() const{
     return car;
 }
 
+int Driver::getNumber() const {
+    return number;
+}
+
+void Driver::setNumber(int num) {
+    number = num;
+}
+
 //Constructor for Team info
 Team::Team(const std::string& name) : name(name) {}
 void Team::addDriver(const Driver& driver) {

@@ -14,6 +14,7 @@ private:
     int handling; //Handling skill
     int stamina; //Stamina skill
     Car* car; //Pointer to car
+    int number; //Driver's number for grid selection
 public:
     Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car );
     std::string getName() const;
@@ -23,6 +24,8 @@ public:
     int getHandling() const;
     int getStamina() const;
     Car* getCar() const;
+    int getNumber() const;
+    void setNumber(int num);
 };
 
 class Team {
