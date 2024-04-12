@@ -30,26 +30,32 @@ int main() {
 
     Track selectedTrack = tracks[trackChoice - 1];
 
-   // Assuming startingGrid is meant to order drivers based on user input
-    std::vector<Driver> startingGrid;
-    std::cout << "Enter the number for drivers in the starting grid order: \n";
+    // Display drivers with numbers for user selection
+    std::cout << "Select drivers for the starting grid. Enter the number corresponding to each driver:\n";
     for (int i = 0; i < drivers.size(); ++i) {
-        int driverNumber;
-        std::cout << "Driver " << i + 1 << ": ";
-        std::cin >> driverNumber;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer after input
+        std::cout << (i + 1) << ". " << drivers[i].getName() << "\n";
+    }
 
-        // Validate input
-        if (driverNumber < 1 || driverNumber > static_cast<int>(drivers.size())) {
-            std::cout << "Invalid driver number. Please try again.\n";
-            --i; // Decrement to repeat the loop for correct input
+    // Initialize a vector to store the starting grid based on user selections
+    std::vector<Driver> startingGrid(drivers.size());
+
+    // User inputs numbers to select drivers for the starting grid
+    for (size_t i = 0; i < startingGrid.size(); ++i) {
+        std::cout << "Enter the number for position " << (i + 1) << " in the grid: ";
+        int driverIndex;
+        std::cin >> driverIndex;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+        // Validate the input number
+        if (driverIndex < 1 || driverIndex > static_cast<int>(drivers.size())) {
+            std::cout << "Invalid number. Please enter a number between 1 and " << drivers.size() << ".\n";
+            --i; // Decrement to retry input for the same grid position
             continue;
         }
 
-        // Add the selected driver to the starting grid
-        startingGrid.push_back(drivers[driverNumber - 1]);
+        // Assign the selected driver to the corresponding position in the starting grid
+        startingGrid[i] = drivers[driverIndex - 1];
     }
-
     std::vector<std::pair<std::string, float>> driverTimes; // Pair of driver name and total race time, including starting advantage
     float sumLapTimes = 0;
     float averageLapTime;
