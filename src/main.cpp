@@ -20,6 +20,20 @@ int main() {
     for (int i = 0; i < tracks.size(); ++i) {
         std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
     }
+
+    int trackChoice;
+    std::cin >> trackChoice; // Get user input
+
+    // Check if the input is within the valid range
+    if (trackChoice < 1 || trackChoice > tracks.size()) {
+        std::cout << "Invalid track selection. Please try again.\n";
+        return -1;  // Indicates invalid selection
+    }
+
+    Track selectedTrack = tracks[trackChoice - 1];
+
+
+
     int trackChoice;
     std::cin >> trackChoice;
     Track selectedTrack = tracks[trackChoice - 1];
