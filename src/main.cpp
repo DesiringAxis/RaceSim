@@ -29,12 +29,12 @@ int main() {
     int trackChoice = 0;
     bool validTrack = false;
 
-    std::cout << "Select a track:\n";
-    for (int i = 0; i < tracks.size(); ++i) {
-        std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
-    }
-
     while (!validTrack) {
+        std::cout << "Select a track:\n";
+        for (int i = 0; i < tracks.size(); ++i) {
+            std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
+        }
+        
         std::cin >> trackChoice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -44,6 +44,7 @@ int main() {
             validTrack = true;
         }
     }
+
 
 
     Track selectedTrack = tracks[trackChoice - 1];
