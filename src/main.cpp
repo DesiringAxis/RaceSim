@@ -5,16 +5,28 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
+#include <sstream>
+#include <iomanip>
 #include "Track.h"
 #include "Driver.h"
 
 extern std::vector<Track> initializeTracks();
 extern std::vector<Driver> initializeDrivers();
 
-void convertTime(float totalTimeInSeconds, int& minutes, int& seconds, int& milliseconds) {
+void convertTime(double totalTimeInSeconds, int& minutes, int& seconds, int& milliseconds) {
     minutes = static_cast<int>(totalTimeInSeconds) / 60;
     seconds = static_cast<int>(totalTimeInSeconds) % 60;
     milliseconds = static_cast<int>((totalTimeInSeconds - static_cast<int>(totalTimeInSeconds)) * 1000);
+}
+
+// Overloaded function
+std::string convertTime(double totalTimeInSeconds) {
+    int minutes, seconds, milliseconds;
+    convertTime(totalTimeInSeconds, minutes, seconds, milliseconds);
+    
+    std::ostringstream oss;
+    oss << std::setfill('0') << minutes << ":" << std::setw(2) << seconds << ":" << std::setw(3) << milliseconds;
+    return oss.str();
 }
 
 int main() {
@@ -68,19 +80,19 @@ int main() {
         }
     }
 
-    std::vector<std::pair<std::string, std::pair<float, std::vector<float>>>> driverTimes;
+    std::vector<std::pair<std::string, std::pair<double, std::vector<double>>>> driverTimes;
 
     for (auto& driver : startingGrid) {
-        float totalRaceTime = 0;
-        std::vector<float> lapTimes;
+        double totalRaceTime = 0;
+        std::vector<double> lapTimes;
 
         for (unsigned int lap = 1; lap <= selectedTrack.getLaps(); ++lap) {
-            float baseLapTime = selectedTrack.getFastestLap();
+            double baseLapTime = static_cast<double>(selectedTrack.getFastestLap());
             baseLapTime *= 1 + (0.01 * selectedTrack.getTurns() * (1 - (driver.getHandling() + driver.getCar()->getHandling()) / 200.0));
             baseLapTime *= 1 + (0.01 * selectedTrack.getStraights() * (1 - (driver.getSpeed() + driver.getCar()->getSpeed()) / 200.0));
 
-            float lapTimeDecreaseFactor = exp(-0.1 * (driver.getStamina() / 10.0) * (lap - 1));
-            float lapTime = baseLapTime * (1 + (0.05 * (lap - 1)) * lapTimeDecreaseFactor);
+            double lapTimeDecreaseFactor = exp(-0.1 * (driver.getStamina() / 10.0) * (lap - 1));
+            double lapTime = baseLapTime * (1 + (0.05 * (lap - 1)) * lapTimeDecreaseFactor);
 
             totalRaceTime += lapTime;
             lapTimes.push_back(lapTime);
@@ -92,23 +104,32 @@ int main() {
     std::sort(driverTimes.begin(), driverTimes.end(), [](const auto& a, const auto& b) {
         return a.second.first < b.second.first;
     });
+    
+    char showDetails;
+    std::cout << "Do you want to see detailed lap times for each driver? (Y/N): ";
+    std::cin >> showDetails;
 
     std::cout << "\nFinishing Order:\n";
-    for (auto& [name, times] : driverTimes) {
-        int minutes, seconds, milliseconds;
-        convertTime(times.first, minutes, seconds, milliseconds);
-        printf("%s - Total Race Time: %d:%02d:%03d\n", name.c_str(), minutes, seconds, milliseconds);
+    for (auto& [name, nestedPair] : driverTimes) {
+        // Display total race time
+        std::cout << name << " - Total Race Time: " << convertTime(nestedPair.first) << "\n";
 
-        auto& lapTimes = times.second;
-        float fastestLap = *std::min_element(lapTimes.begin(), lapTimes.end());
-        float averageLapTime = std::accumulate(lapTimes.begin(), lapTimes.end(), 0.0f) / lapTimes.size();
+        // Check if detailed lap times are requested
+        if (showDetails == 'Y' || showDetails == 'y') {
+            std::cout << "Detailed Lap Times for " << name << ":\n";
+            for (size_t i = 0; i < nestedPair.second.size(); ++i) {
+                std::string formattedLapTime = convertTime(nestedPair.second[i]);
+                std::cout << "Lap " << (i + 1) << ": " << formattedLapTime << "\n";
+            }
+        }
 
-        convertTime(fastestLap, minutes, seconds, milliseconds);
-        printf("    Fastest Lap: %d:%02d:%03d\n", minutes, seconds, milliseconds);
+        // Calculating and displaying fastest and average lap times
+        double fastestLap = *std::min_element(nestedPair.second.begin(), nestedPair.second.end());
+        std::cout << "Fastest Lap: " << convertTime(fastestLap) << "\n";
 
-        convertTime(averageLapTime, minutes, seconds, milliseconds);
-        printf("    Average Lap: %d:%02d:%03d\n", minutes, seconds, milliseconds);
+        double totalLapTime = std::accumulate(nestedPair.second.begin(), nestedPair.second.end(), 0.0);
+        double averageLapTime = totalLapTime / nestedPair.second.size();
+        std::cout << "Average Lap: " << convertTime(averageLapTime) << "\n";
     }
-
     return 0;
 }
