@@ -1,11 +1,11 @@
 #include "Track.h"
-#include <set>
 #include <vector>
 #include <string>
 #include <regex>
 #include <iostream>
 
 using namespace std;
+
 // Constructor
 Track::Track(const std::string& name, const std::string& location, unsigned int laps, int turns, int straights, float fastestLap)
     : name(name), location(location), laps(laps), turns(turns), straights(straights), fastestLap(fastestLap) {}
@@ -38,7 +38,6 @@ float Track::getFastestLap() const{
 // Initialize specific tracks, constructs object inside container
 std::vector<Track> initializeTracks() {
     std::vector<Track> tracks;
-    std::set<std::string> trackNames;
     std::regex namePattern("^[A-Za-z\\s-]+$");
     std::vector<std::string> trackNames = {"Silverstone", "Monza", "Spa-Francorchamps", "Suzuka", "Monaco"};
 
@@ -57,11 +56,8 @@ std::vector<Track> initializeTracks() {
                 tracks.emplace_back(name, "Monaco", 78, 19, 3, 74.693f);
             }
          }else {
-            std::cout << "Invalid track name detected: " << name << std::endl;
+            cout << "Invalid track name detected: " << name << endl;
         }
     }
-    
-    for (const Track& track : tracks) {
-        trackNames.insert(track.getName()); // Log each track name as it's added
-    }
+    return tracks; // Added return statement
 }

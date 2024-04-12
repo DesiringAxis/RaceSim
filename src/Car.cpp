@@ -1,10 +1,10 @@
 #include "Car.h"
 
-//Constructor for Car's info
+// Constructor definition for Car's info
 Car::Car(const std::string& name, float speed, float handling, float acceleration)
     : name(name), speed(speed), handling(handling), acceleration(acceleration) {}
 
-//Returns Driver's info when called
+// Returns Car's info when called
 std::string Car::getName() const {
     return name;
 }
@@ -21,7 +21,7 @@ float Car::getAcceleration() const {
     return acceleration;
 }
 
-// Cars and corresponding speed, handling, and acceleration stats
+// Definitions of global Car instances
 Car* mercedesCar1 = new Car("Mercedes Car 1", 9.0, 8.0, 10.0);
 Car* mercedesCar2 = new Car("Mercedes Car 2", 8.0, 9.0, 9.0);
 Car* mclarenCar1 = new Car("McLaren Car 1", 9.0, 7.0, 8.0);

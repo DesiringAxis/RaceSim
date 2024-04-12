@@ -23,20 +23,13 @@ int main() {
     auto tracks = initializeTracks();
     auto drivers = initializeDrivers();
 
-    std::cout << "Select a track:\n";
-    for (int i = 0; i < tracks.size(); ++i) {
-        std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
-    }
-
     int trackChoice = 0;
     bool validTrack = false;
 
     while (!validTrack) {
-        if (trackChoice == 0) {  // Only display the track options initially or after invalid input
-            std::cout << "Select a track:\n";
-            for (int i = 0; i < tracks.size(); ++i) {
-                std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
-            }
+        std::cout << "Select a track:\n";
+        for (int i = 0; i < tracks.size(); ++i) {
+            std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
         }
 
         std::cin >> trackChoice;
@@ -44,7 +37,6 @@ int main() {
 
         if (trackChoice < 1 || trackChoice > static_cast<int>(tracks.size())) {
             std::cout << "Invalid number. Please enter a valid pre-assigned number.\n";
-            trackChoice = 0;  // Reset trackChoice to ensure the track options are displayed again
         } else {
             validTrack = true;
         }
@@ -72,7 +64,7 @@ int main() {
             startingGrid.push_back(*it);
         } else {
             std::cout << "Invalid number. Please enter a valid pre-assigned number.\n";
-            --i;
+            --i; // Decrease counter to retry the same position
         }
     }
 
