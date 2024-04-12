@@ -4,9 +4,6 @@
 Driver::Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car)
     : name(name), team(team), age(age), speed(speed), handling(handling), stamina(stamina), car(car) {}
 
-//Constructor for assigned driver number
-Driver::Driver() : name(""), number(0) {} // Implementing default constructor
-
 Driver::Driver(std::string name, int number) : name(name), number(number) {}
 //Returns Driver's info when called
 
