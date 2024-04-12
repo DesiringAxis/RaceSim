@@ -4,11 +4,18 @@
 #include <limits>
 #include <algorithm>
 #include <map>
+#include <numeric>
 #include "Track.h"
 #include "Driver.h"
 
 extern std::vector<Track> initializeTracks();
 extern std::vector<Driver> initializeDrivers();
+
+void convertTime(float totalTimeInSeconds, int& minutes, int& seconds, int& milliseconds) {
+    minutes = static_cast<int>(totalTimeInSeconds) / 60;
+    seconds = static_cast<int>(totalTimeInSeconds) % 60;
+    milliseconds = static_cast<int>((totalTimeInSeconds - static_cast<int>(totalTimeInSeconds)) * 1000);
+}
 
 int main() {
     auto tracks = initializeTracks();
@@ -21,7 +28,7 @@ int main() {
 
     int trackChoice;
     std::cin >> trackChoice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Important to clear the buffer
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     if (trackChoice < 1 || trackChoice > static_cast<int>(tracks.size())) {
         std::cout << "Invalid track selection. Please try again.\n";
@@ -30,79 +37,71 @@ int main() {
 
     Track selectedTrack = tracks[trackChoice - 1];
 
-   // Display drivers with pre-assigned numbers for user selection
     std::cout << "Enter the number for drivers in the starting grid order:\n";
     for (const auto& driver : drivers) {
         std::cout << driver.getNumber() << ". " << driver.getName() << "\n";
     }
 
-    // Initialize a vector to store the starting grid based on user selections
-    std::vector<Driver> startingGrid(drivers.size());
-
-    // User inputs numbers to select drivers for the starting grid
-    for (size_t i = 0; i < startingGrid.size(); ++i) {
+    std::vector<Driver> startingGrid;
+    for (size_t i = 0; i < drivers.size(); ++i) {
         std::cout << "Enter the pre-assigned number for position " << (i + 1) << " in the grid: ";
         int driverNumber;
         std::cin >> driverNumber;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        // Validate the input number by searching for the driver with that number
         auto it = std::find_if(drivers.begin(), drivers.end(), [driverNumber](const Driver& d) {
             return d.getNumber() == driverNumber;
         });
 
         if (it != drivers.end()) {
-            startingGrid[i] = *it; // Add driver to the starting grid
+            startingGrid.push_back(*it);
         } else {
             std::cout << "Invalid number. Please enter a valid pre-assigned number.\n";
-            --i; // Decrement to retry input for the same grid position
+            --i;
         }
     }
-    std::vector<std::pair<std::string, float>> driverTimes; // Pair of driver name and total race time, including starting advantage
-    float sumLapTimes = 0;
-    float averageLapTime;
-    float minLapTime = std::numeric_limits<float>::max();
-    float trackFastestLap = selectedTrack.getFastestLap();
-    unsigned int totalLaps = selectedTrack.getLaps();
 
-    for (auto& driver : drivers) {
-        float baseLapTime = trackFastestLap;
-        // Adding time based on driver and car attributes for the first lap
-        baseLapTime += baseLapTime * selectedTrack.getTurns() * (1 - (driver.getHandling() * driver.getCar()->getHandling() / 100.0));
-        baseLapTime += baseLapTime * selectedTrack.getStraights() * (1 - (driver.getSpeed() * driver.getCar()->getSpeed() / 100.0));
-        float totalRaceTime = baseLapTime; // First lap time
-        
-        // Calculating lap times for remaining laps, affected by stamina
-        for (unsigned int lap = 2; lap <= totalLaps; ++lap) {
-            // Each subsequent lap increases at a rate that decreases with stamina
+    std::vector<std::pair<std::string, std::pair<float, std::vector<float>>>> driverTimes;
+
+    for (auto& driver : startingGrid) {
+        float totalRaceTime = 0;
+        std::vector<float> lapTimes;
+
+        for (unsigned int lap = 1; lap <= selectedTrack.getLaps(); ++lap) {
+            float baseLapTime = selectedTrack.getFastestLap();
+            baseLapTime *= 1 + (0.01 * selectedTrack.getTurns() * (1 - (driver.getHandling() + driver.getCar()->getHandling()) / 200.0));
+            baseLapTime *= 1 + (0.01 * selectedTrack.getStraights() * (1 - (driver.getSpeed() + driver.getCar()->getSpeed()) / 200.0));
+
             float lapTimeDecreaseFactor = exp(-0.1 * (driver.getStamina() / 10.0) * (lap - 1));
             float lapTime = baseLapTime * (1 + (0.05 * (lap - 1)) * lapTimeDecreaseFactor);
+
             totalRaceTime += lapTime;
-        
-        // Tracking the fastest lap and sum of all lap times for later calculations
-            if (lapTime < minLapTime) {
-                minLapTime = lapTime;
-            }
-            sumLapTimes += lapTime;
+            lapTimes.push_back(lapTime);
         }
 
-        driverTimes.emplace_back(driver.getName(), totalRaceTime);
+        driverTimes.emplace_back(driver.getName(), std::make_pair(totalRaceTime, lapTimes));
     }
 
-    // Sort and display the race results
     std::sort(driverTimes.begin(), driverTimes.end(), [](const auto& a, const auto& b) {
-        return a.second < b.second;
+        return a.second.first < b.second.first;
     });
 
     std::cout << "\nFinishing Order:\n";
-    for (auto& [name, time] : driverTimes) {
-        std::cout << name << " - Total Race Time: " << time << " seconds\n";
-    }
+    for (auto& [name, times] : driverTimes) {
+        int minutes, seconds, milliseconds;
+        convertTime(times.first, minutes, seconds, milliseconds);
+        printf("%s - Total Race Time: %d:%02d:%03d\n", name.c_str(), minutes, seconds, milliseconds);
 
-    // Calculate and print average lap time
-    averageLapTime = sumLapTimes / (drivers.size() * totalLaps);
-    std::cout << "\nAverage lap time: " << averageLapTime << " seconds\n";
-    std::cout << "Fastest lap time: " << minLapTime << " seconds\n";
+        auto& lapTimes = times.second;
+        float fastestLap = *std::min_element(lapTimes.begin(), lapTimes.end());
+        float averageLapTime = std::accumulate(lapTimes.begin(), lapTimes.end(), 0.0f) / lapTimes.size();
+
+        convertTime(fastestLap, minutes, seconds, milliseconds);
+        printf("    Fastest Lap: %d:%02d:%03d\n", minutes, seconds, milliseconds);
+
+        convertTime(averageLapTime, minutes, seconds, milliseconds);
+        printf("    Average Lap: %d:%02d:%03d\n", minutes, seconds, milliseconds);
+    }
 
     return 0;
 }

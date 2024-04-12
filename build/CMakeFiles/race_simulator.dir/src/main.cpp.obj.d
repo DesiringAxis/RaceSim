@@ -171,6 +171,8 @@ CMakeFiles/race_simulator.dir/src/main.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/uses_allocator.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/invoke.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/numeric \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_numeric.h \
  C:\Users\Jay\ Bhavsar\Desktop\AERSP424\Project\RaceSim\RaceSim\src\Track.h \
  C:\Users\Jay\ Bhavsar\Desktop\AERSP424\Project\RaceSim\RaceSim\src\Driver.h \
  C:\Users\Jay\ Bhavsar\Desktop\AERSP424\Project\RaceSim\RaceSim\src\Car.h

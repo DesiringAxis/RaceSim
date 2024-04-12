@@ -16,8 +16,8 @@ private:
     Car* car; //Pointer to car
     int number; //Driver's number for grid selection
 public:
-    Driver() : name(""), number(0){}
-    Driver(std::string name, int number) : name(name), number(number) {}
+    Driver();
+    Driver(std::string name, int number);
     Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car );
     std::string getName() const;
     std::string getTeam() const;

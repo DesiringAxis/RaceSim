@@ -1,5 +1,8 @@
 #include "Driver.h"
 
+// Default constructor definition
+Driver::Driver() : name(""), team(""), age(0), speed(0), handling(0), stamina(0), car(nullptr), number(0) {}
+
 //Constructor for Driver's info
 Driver::Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car)
     : name(name), team(team), age(age), speed(speed), handling(handling), stamina(stamina), car(car) {}
@@ -88,6 +91,11 @@ std::vector<Driver> initializeDrivers() {
     for (const Team& team : teams) {
         auto teamDrivers = team.getDrivers(); // Get drivers from each team
         allDrivers.insert(allDrivers.end(), teamDrivers.begin(), teamDrivers.end()); // Aggregate drivers
+    }
+
+    // Assign numbers from 1 to 6 to each driver
+    for (size_t i = 0; i < allDrivers.size(); ++i) {
+        allDrivers[i].setNumber(i + 1);
     }
 
     return allDrivers;
