@@ -1,6 +1,6 @@
 #include "Car.h"
 
-
+//Constructor
 Car::Car(const std::string& name, float speed, float handling, float acceleration)
     : name(name), speed(speed), handling(handling), acceleration(acceleration) {}
 
