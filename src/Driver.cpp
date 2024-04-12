@@ -70,3 +70,15 @@ std::vector<Team> initializeF1Teams() {
     std::vector<Team> teams = {mercedes, mclaren, astonMartin};
     return teams;
 }
+
+std::vector<Driver> initializeDrivers() {
+    std::vector<Driver> allDrivers;
+    auto teams = initializeF1Teams(); // Initialize teams and their drivers
+
+    for (const Team& team : teams) {
+        auto teamDrivers = team.getDrivers(); // Get drivers from each team
+        allDrivers.insert(allDrivers.end(), teamDrivers.begin(), teamDrivers.end()); // Aggregate drivers
+    }
+
+    return allDrivers;
+}

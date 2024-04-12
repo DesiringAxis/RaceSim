@@ -37,5 +37,6 @@ public:
 };
 
 std::vector<Team> initializeF1Teams();
+std::vector<Driver> initializeDrivers();
 
 #endif // DRIVER_H

@@ -30,7 +30,7 @@ float Track::getFastestLap() const{
 }
 
 // Initialize specific tracks, constructs object inside container
-std::vector<Track> intitializeTracks() {
+std::vector<Track> initializeTracks() {
     std::vector<Track> tracks;
     tracks.emplace_back("Silverstone", "UK", 52, 18, 6, 90.275f);
     tracks.emplace_back("Monza", "Italy", 53, 11, 4, 84.030f);
