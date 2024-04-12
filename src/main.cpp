@@ -7,7 +7,6 @@
 #include "Track.h"
 #include "Driver.h"
 
-// Initialize Track, Driver, and associated car info
 extern std::vector<Track> initializeTracks();
 extern std::vector<Driver> initializeDrivers();
 
@@ -15,35 +14,27 @@ int main() {
     auto tracks = initializeTracks();
     auto drivers = initializeDrivers();
 
-    // Display tracks and let the user select one
     std::cout << "Select a track:\n";
     for (int i = 0; i < tracks.size(); ++i) {
         std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
     }
 
     int trackChoice;
-    std::cin >> trackChoice; // Get user input
+    std::cin >> trackChoice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Important to clear the buffer
 
-    // Check if the input is within the valid range
-    if (trackChoice < 1 || trackChoice > tracks.size()) {
+    if (trackChoice < 1 || trackChoice > static_cast<int>(tracks.size())) {
         std::cout << "Invalid track selection. Please try again.\n";
-        return -1;  // Indicates invalid selection
+        return -1;
     }
 
     Track selectedTrack = tracks[trackChoice - 1];
 
-
-
-    int trackChoice;
-    std::cin >> trackChoice;
-    Track selectedTrack = tracks[trackChoice - 1];
-
-    // Ask user to specify the starting grid order
     std::cout << "Enter the starting grid order by driver name, one per line:\n";
     std::vector<std::string> startingGridOrder;
     std::string driverName;
-    for (int i = 0; i < 6; ++i) { // Assuming 6 drivers
-        std::cin >> driverName;
+    for (int i = 0; i < 6; ++i) {
+        std::getline(std::cin, driverName);
         startingGridOrder.push_back(driverName);
     }
 
