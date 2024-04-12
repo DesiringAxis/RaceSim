@@ -26,14 +26,25 @@ int main() {
         std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
     }
 
-    int trackChoice;
-    std::cin >> trackChoice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    int trackChoice = 0;
+    bool validTrack = false;
 
-    if (trackChoice < 1 || trackChoice > static_cast<int>(tracks.size())) {
-        std::cout << "Invalid track selection. Please try again.\n";
-        return -1;
+    while (!validTrack) {
+        std::cout << "Select a track:\n";
+        for (int i = 0; i < tracks.size(); ++i) {
+            std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
+        }
+
+        std::cin >> trackChoice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        if (trackChoice < 1 || trackChoice > static_cast<int>(tracks.size())) {
+            std::cout << "Invalid number. Please enter a valid pre-assigned number.\n";
+        } else {
+            validTrack = true;
+        }
     }
+
 
     Track selectedTrack = tracks[trackChoice - 1];
 
