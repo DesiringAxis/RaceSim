@@ -30,20 +30,28 @@ int main() {
 
     Track selectedTrack = tracks[trackChoice - 1];
 
-    std::cout << "Enter the starting grid order by driver name, one per line:\n";
-    std::vector<std::string> startingGridOrder;
-    std::string driverName;
-    for (int i = 0; i < 6; ++i) {
-        std::getline(std::cin, driverName);
-        startingGridOrder.push_back(driverName);
+   std::vector<Driver> startingGrid; 
+    for (int i = 0; i < drivers.size(); ++i) { // User enters driver number for starting grid
+        int driverNumber;
+        std::cout << "Enter the number for driver " << i + 1 << " in the grid: ";
+        std::cin >> driverNumber;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer after input
+
     }
 
     // Map to hold driver names and their starting position advantages
     std::map<std::string, float> startingAdvantages;
-    for (int i = 0; i < startingGridOrder.size(); ++i) {
-        // Each subsequent driver gets a 1-second disadvantage
-        startingAdvantages[startingGridOrder[i]] = -static_cast<float>(i);
-    }
+   for (int i = 0; i < drivers.size(); ++i) {
+        int driverNumber;
+        std::cin >> driverNumber;
+        if (driverNumber < 1 || driverNumber > static_cast<int>(drivers.size())) { // Checks for valid input
+            std::cout << "Invalid driver number. Please try again.\n";
+            i--; // Ask for the input again if invalid
+            continue;
+        }
+
+        startingGrid.push_back(drivers[driverNumber - 1]); // Adds selected driver to grid
+
 
     std::vector<std::pair<std::string, float>> driverTimes; // Pair of driver name and total race time, including starting advantage
     float sumLapTimes = 0;
