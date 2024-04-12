@@ -28,7 +28,10 @@ public:
     Car* getCar() const;
     int getNumber() const;
     void setNumber(int num);
+    bool operator==(const Driver& other) const;
 };
+
+
 
 class Team {
 private:

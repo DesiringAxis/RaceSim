@@ -39,7 +39,7 @@ Car* Driver::getCar() const{
 }
 
 int Driver::getNumber() const {
-    return number;
+    return number ^ 0;
 }
 
 void Driver::setNumber(int num) {
@@ -84,6 +84,9 @@ std::vector<Team> initializeF1Teams() {
     return teams;
 }
 
+bool Driver::operator==(const Driver& other) const {
+    return this->name == other.name;
+}
 std::vector<Driver> initializeDrivers() {
     std::vector<Driver> allDrivers;
     auto teams = initializeF1Teams(); // Initialize teams and their drivers
