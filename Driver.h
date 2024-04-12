@@ -8,16 +8,34 @@
 class Driver {
 private:
     std::string name; //Driver's Name
+    std::string team; //Driver's Team
     int age; //Driver's age
-    std::vector<float> skillLevels; //Driver's different skill levels (Speed, Handling, and Stamina(will affect fatigue))
+    int speed; //Speed skill
+    int handling; //Handling skill
+    int stamina; //Stamina skill
     Car* car; //Pointer to car
 public:
-    Driver(std::string name, int age, const std::vector<float>& skillLevels, Car* car); //Defines construction for driver's information
-    //Getters
+    Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car );
     std::string getName() const;
+    std::string getTeam() const;
     int getAge() const;
-    std::vector<float> getSkillLevels() const;
+    int getSpeed () const;
+    int getHandling() const;
+    int getStamina() const;
     Car* getCar() const;
 };
+
+class Team {
+private:
+        std::string name;
+        std::vector<Driver> drivers;
+public:
+    Team(const std::string& name);
+    void addDriver(const Driver& driver);
+    std::vector<Driver> getDrivers() const;
+    std::string getName() const;
+};
+
+std::vector<Team> initializeF1Teams();
 
 #endif // DRIVER_H

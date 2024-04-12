@@ -27,7 +27,7 @@ public:
 
 };
 
-// Initialization to retrieve tracks
+  // Initialization to retrieve tracks
 std::vector<Track> intitializeTracks();
 
 #endif // TRACK_H

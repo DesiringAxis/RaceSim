@@ -10,12 +10,19 @@ private:
     float acceleration;//Car's Acceleration
     float handling;//Car's Handling
 public:
-    Car(std::string name, float speed, float acceleration, float handling);//Defines construction for car's information
+    Car(const std::string& name, float speed, float handling, float acceleration);//Defines construction for car's information
     //Getters
     std::string getName() const;
     float getSpeed() const;
-    float getAcceleration() const;
     float getHandling() const;
+    float getAcceleration() const;
 };
+
+extern Car* mercedesCar1;
+extern Car* mercedesCar2;
+extern Car* mclarenCar1;
+extern Car* mclarenCar2;
+extern Car* astonMartinCar1;
+extern Car* astonMartinCar2;
 
 #endif // CAR_H

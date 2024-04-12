@@ -3,6 +3,7 @@
 #include <cmath>
 #include <limits>
 #include <algorithm>
+#include <map>
 #include "Track.h"
 #include "Driver.h"
 
@@ -46,14 +47,16 @@ int main() {
 
     for (auto& driver : drivers) {
         Car* car = driver.getCar();
-        float stamina = driver.getSkillLevels()[2]; // Assuming the third skill is stamina
+        float speed = driver.getSpeed();
+        float handling = driver.getHandling();
+        float stamina = driver.getStamina(); // Assuming the third skill is stamina
         float fastestLap = selectedTrack.getFastestLap(); // Reset fastestLap for each driver
         
         // Calculate time added for both turns and straights, adjusted by starting advantage
         fastestLap += selectedTrack.getTurns() * fastestLap * 
-                      (1 - (driver.getSkillLevels()[0] * car->getAcceleration() * (car->getHandling() * car->getHandling()) / 10000));
+                      (1 - (driver.getSpeed() * car->getAcceleration() * (car->getHandling() * car->getHandling()) / 10000));
         fastestLap += selectedTrack.getStraights() * fastestLap * 
-                      (1 - (driver.getSkillLevels()[1] * car->getSpeed() * (car->getSpeed() * car->getSpeed()) / 10000));
+                      (1 - (driver.getHandling() * car->getSpeed() * (car->getSpeed() * car->getSpeed()) / 10000));
         
         // Calculate total race time with exponential decay based on stamina, including starting advantage
         float driverTotalTime = startingAdvantages[driver.getName()]; // Include starting advantage
