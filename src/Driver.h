@@ -16,6 +16,9 @@ private:
     Car* car; //Pointer to car
     int number; //Driver's number for grid selection
 public:
+    virtual double performanceRating() const {
+        return (speed + handling) * (stamina / 100.0);
+    }
     Driver();
     Driver(std::string name, int number);
     Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car );
@@ -29,6 +32,11 @@ public:
     int getNumber() const;
     void setNumber(int num);
     bool operator==(const Driver& other) const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Driver& driver) {
+        return os << "Driver(Name: " << driver.getName() 
+                  << ", Team: " << driver.getTeam() << ")";
+    }
 };
 
 

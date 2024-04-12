@@ -15,6 +15,9 @@ private:
     float fastestLap; //Fastest Lap time done with this generation of F1 car
 
 public:
+  virtual double getTrackRating() const {
+        return static_cast<double>(turns + straights) / laps;
+    }
     // Initialize track with name, location, # of turns, # of straights
     Track(const std::string& name, const std::string& location, unsigned int laps, int turns, int straights, float fastestLap);
     //Getters
@@ -24,6 +27,11 @@ public:
     int getTurns() const;
     int getStraights() const;
     float getFastestLap() const;
+
+    bool operator<(const Track& other) const {
+      return this->fastestLap < other.fastestLap;
+    }
+
 
 };
 

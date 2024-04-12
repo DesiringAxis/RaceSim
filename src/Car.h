@@ -1,6 +1,8 @@
 #ifndef CAR_H
 #define CAR_H
 
+#include <iostream>
+#include <sstream>
 #include <string>
 
 class Car {
@@ -10,11 +12,24 @@ private:
     float acceleration; // Car's Acceleration
     float handling; // Car's Handling
 public:
+    virtual double calculateEfficiency() const {
+        return speed * acceleration / handling;
+    }
     Car(const std::string& name, float speed, float handling, float acceleration); // Constructor
     std::string getName() const;
     float getSpeed() const;
     float getHandling() const;
     float getAcceleration() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Car& car) {
+        std::ostringstream details;
+        details << "Car(Name: " << car.getName()
+                << ", Speed: " << car.getSpeed()
+                << ", Handling: " << car.getHandling()
+                << ", Acceleration: " << car.getAcceleration() << ")";
+        os << details.str();
+        return os;
+    }
 };
 
 // Extern declarations for global access
