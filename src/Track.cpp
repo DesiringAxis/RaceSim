@@ -10,7 +10,7 @@ using namespace std;
 Track::Track(const std::string& name, const std::string& location, unsigned int laps, int turns, int straights, float fastestLap)
     : name(name), location(location), laps(laps), turns(turns), straights(straights), fastestLap(fastestLap) {}
 
-//Returns Track info
+// Track details
 std::string Track::getName() const {
     return name;
 }
@@ -35,7 +35,7 @@ float Track::getFastestLap() const{
     return fastestLap;
 }
 
-// Initialize specific tracks, constructs object inside container
+// Track list
 std::vector<Track> initializeTracks() {
     std::vector<Track> tracks;
     std::regex namePattern("^[A-Za-z\\s-]+$");
@@ -43,7 +43,6 @@ std::vector<Track> initializeTracks() {
 
     for (const auto& name : trackNames) {
         if (std::regex_match(name, namePattern)) {
-            // Only add the track if the name matches the pattern
             if (name == "Silverstone") {
                 tracks.emplace_back(name, "UK", 52, 18, 6, 90.275f);
             } else if (name == "Monza") {
@@ -59,5 +58,5 @@ std::vector<Track> initializeTracks() {
             cout << "Invalid track name detected: " << name << endl;
         }
     }
-    return tracks; // Added return statement
+    return tracks; 
 }

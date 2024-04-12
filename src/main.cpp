@@ -12,7 +12,7 @@
 
 extern std::vector<Track> initializeTracks();
 extern std::vector<Driver> initializeDrivers();
-
+//Converts total time into readable format
 void convertTime(double totalTimeInSeconds, int& minutes, int& seconds, int& milliseconds) {
     minutes = static_cast<int>(totalTimeInSeconds) / 60;
     seconds = static_cast<int>(totalTimeInSeconds) % 60;
@@ -55,7 +55,7 @@ int main() {
     }
 
     Track selectedTrack = tracks[trackChoice - 1];
-
+    // User starting grid order
     std::cout << "Enter the number for drivers in the starting grid order:\n";
     for (const auto& driver : drivers) {
         std::cout << driver.getNumber() << ". " << driver.getName() << "\n";

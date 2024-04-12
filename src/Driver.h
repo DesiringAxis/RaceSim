@@ -45,6 +45,7 @@ public:
 
 class Team {
 private:
+    //Team information
         std::string name;
         std::vector<Driver> drivers;
 public:

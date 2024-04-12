@@ -1,15 +1,14 @@
 #include "Driver.h"
 
-
+//Constructors
 Driver::Driver() : name(""), team(""), age(0), speed(0), handling(0), stamina(0), car(nullptr), number(0) {}
-
 
 Driver::Driver(const std::string& name, const std::string& team, int age, int speed, int handling, int stamina, Car* car)
     : name(name), team(team), age(age), speed(speed), handling(handling), stamina(stamina), car(car) {}
 
 Driver::Driver(std::string name, int number) : name(name), number(number) {}
 
-
+//Driver and race info
 std::string Driver::getName() const {
     return name;
 }
@@ -59,7 +58,7 @@ std::vector<Driver> Team::getDrivers() const {
 std::string Team::getName() const {
     return name;
 }
-
+//Initialize teams with drivers
 std::vector<Team> initializeF1Teams() {
     extern Car* mercedesCar1;
     extern Car* mercedesCar2;
