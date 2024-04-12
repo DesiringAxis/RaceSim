@@ -7,19 +7,23 @@
 
 class Track {
 private:
-    std::string name;       // Track name
-    std::string location;   // Track location
-    int turns;              // Number of turns
-    int straights;          // Number of straights
+    std::string name; // Track name
+    std::string location; // Track location
+    unsigned int laps; //Number of laps
+    int turns; // Number of turns
+    int straights; // Number of straights
+    float fastestLap; //Fastest Lap time done with this generation of F1 car
 
 public:
     // Initialize track with name, location, # of turns, # of straights
-    Track(const std::string& name, const std::string& location, int turns, int straights);
-
-    std::string getName() const; // Gets track name
-    std::string getLocation() const; // Gets track location
-    int getTurns() const; // Gets number of turns
-    int getStraights() const; // Gets number of straights
+    Track(const std::string& name, const std::string& location, unsigned int laps, int turns, int straights, float fastestLap);
+    //Getters
+    std::string getName() const;
+    std::string getLocation() const;
+    unsigned int getLaps() const;
+    int getTurns() const;
+    int getStraights() const;
+    float getFastestLap() const;
 
 };
 
