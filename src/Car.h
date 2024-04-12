@@ -25,4 +25,5 @@ extern Car* mclarenCar2;
 extern Car* astonMartinCar1;
 extern Car* astonMartinCar2;
 
+char car;
 #endif // CAR_H

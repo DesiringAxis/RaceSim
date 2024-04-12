@@ -18,6 +18,8 @@ void convertTime(float totalTimeInSeconds, int& minutes, int& seconds, int& mill
 }
 
 int main() {
+    double Var = 0.0;
+    static int Static = 0;
     auto tracks = initializeTracks();
     auto drivers = initializeDrivers();
 
@@ -30,22 +32,23 @@ int main() {
     bool validTrack = false;
 
     while (!validTrack) {
-        std::cout << "Select a track:\n";
-        for (int i = 0; i < tracks.size(); ++i) {
-            std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
+        if (trackChoice == 0) {  // Only display the track options initially or after invalid input
+            std::cout << "Select a track:\n";
+            for (int i = 0; i < tracks.size(); ++i) {
+                std::cout << i + 1 << ". " << tracks[i].getName() << "\n";
+            }
         }
-        
+
         std::cin >> trackChoice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (trackChoice < 1 || trackChoice > static_cast<int>(tracks.size())) {
             std::cout << "Invalid number. Please enter a valid pre-assigned number.\n";
+            trackChoice = 0;  // Reset trackChoice to ensure the track options are displayed again
         } else {
             validTrack = true;
         }
     }
-
-
 
     Track selectedTrack = tracks[trackChoice - 1];
 
