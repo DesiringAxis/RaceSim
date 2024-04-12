@@ -49,47 +49,45 @@ int main() {
     float sumLapTimes = 0;
     float averageLapTime;
     float minLapTime = std::numeric_limits<float>::max();
+    float trackFastestLap = selectedTrack.getFastestLap();
+    unsigned int totalLaps = selectedTrack.getLaps();
 
     for (auto& driver : drivers) {
-        Car* car = driver.getCar();
-        float speed = driver.getSpeed();
-        float handling = driver.getHandling();
-        float stamina = driver.getStamina(); // Assuming the third skill is stamina
-        float fastestLap = selectedTrack.getFastestLap(); // Reset fastestLap for each driver
+        float baseLapTime = trackFastestLap;
+        // Adding time based on driver and car attributes for the first lap
+        baseLapTime += baseLapTime * selectedTrack.getTurns() * (1 - (driver.getHandling() * driver.getCar()->getHandling() / 100.0));
+        baseLapTime += baseLapTime * selectedTrack.getStraights() * (1 - (driver.getSpeed() * driver.getCar()->getSpeed() / 100.0));
+        float totalRaceTime = baseLapTime; // First lap time
         
-        // Calculate time added for both turns and straights, adjusted by starting advantage
-        fastestLap += selectedTrack.getTurns() * fastestLap * 
-                      (1 - (driver.getSpeed() * car->getAcceleration() * (car->getHandling() * car->getHandling()) / 10000));
-        fastestLap += selectedTrack.getStraights() * fastestLap * 
-                      (1 - (driver.getHandling() * car->getSpeed() * (car->getSpeed() * car->getSpeed()) / 10000));
+        // Calculating lap times for remaining laps, affected by stamina
+        for (unsigned int lap = 2; lap <= totalLaps; ++lap) {
+            // Each subsequent lap increases at a rate that decreases with stamina
+            float lapTimeDecreaseFactor = exp(-0.1 * (driver.getStamina() / 10.0) * (lap - 1));
+            float lapTime = baseLapTime * (1 + (0.05 * (lap - 1)) * lapTimeDecreaseFactor);
+            totalRaceTime += lapTime;
         
-        // Calculate total race time with exponential decay based on stamina, including starting advantage
-        float driverTotalTime = startingAdvantages[driver.getName()]; // Include starting advantage
-        for(unsigned int lap = 1; lap <= selectedTrack.getLaps(); ++lap) {
-            float lapTime = fastestLap * exp(-stamina * lap);
-            driverTotalTime += lapTime;
-            sumLapTimes += lapTime;
+        // Tracking the fastest lap and sum of all lap times for later calculations
             if (lapTime < minLapTime) {
-                minLapTime = lapTime; // Update fastest lap across all drivers
+                minLapTime = lapTime;
             }
+            sumLapTimes += lapTime;
         }
 
-        driverTimes.emplace_back(driver.getName(), driverTotalTime); // Store each driver's total race time
+        driverTimes.emplace_back(driver.getName(), totalRaceTime);
     }
 
-    // Sort drivers by their total race time
-    std::sort(driverTimes.begin(), driverTimes.end(), [](const std::pair<std::string, float>& a, const std::pair<std::string, float>& b) {
+    // Sort and display the race results
+    std::sort(driverTimes.begin(), driverTimes.end(), [](const auto& a, const auto& b) {
         return a.second < b.second;
     });
 
-    // Print finishing grid order
     std::cout << "\nFinishing Order:\n";
-    for (const auto& driver : driverTimes) {
-        std::cout << driver.first << " - Total Race Time: " << driver.second << " seconds\n";
+    for (auto& [name, time] : driverTimes) {
+        std::cout << name << " - Total Race Time: " << time << " seconds\n";
     }
 
     // Calculate and print average lap time
-    averageLapTime = sumLapTimes / (drivers.size() * selectedTrack.getLaps());
+    averageLapTime = sumLapTimes / (drivers.size() * totalLaps);
     std::cout << "\nAverage lap time: " << averageLapTime << " seconds\n";
     std::cout << "Fastest lap time: " << minLapTime << " seconds\n";
 
