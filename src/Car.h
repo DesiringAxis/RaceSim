@@ -22,8 +22,7 @@ public:
     float getSpeed() const;
     float getHandling() const;
     float getAcceleration() const;
-    
-    //Allows printing of car's details to console
+
     friend std::ostream& operator<<(std::ostream& os, const Car& car) {
         std::ostringstream details;
         details << "Car(Name: " << car.getName()
@@ -34,7 +33,7 @@ public:
         return os;
     }
 };
-//Allows access of car in other files
+
 extern Car* mercedesCar1;
 extern Car* mercedesCar2;
 extern Car* mclarenCar1;

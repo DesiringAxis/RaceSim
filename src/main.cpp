@@ -46,13 +46,13 @@ void processLogQueue() {
         logMessages.pop();
     }
 }
-//Data Containers
+
 std::vector<Driver> drivers;
 std::vector<Track> tracks;
 std::queue<std::string> logQueue;
 std::mutex mtx;
 std::condition_variable cv;
-// Logs messages 
+
 void logThreadFunction() {
     std::string message;
     while (true) {
@@ -64,21 +64,23 @@ void logThreadFunction() {
         if (message == "Exit") break;
     }
 }
-// Loads data in a seperate thread
+
 void dataLoaderFunction() {
-    std::this_thread::sleep_for(std::chrono::seconds(1)); 
+    // Simulate data loading
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulating delay
     std::lock_guard<std::mutex> lk(mtx);
-    drivers = initializeDrivers(); 
-    tracks = initializeTracks();   
+    drivers = initializeDrivers(); // Assuming this function is thread-safe
+    tracks = initializeTracks();   // Assuming this function is thread-safe
     logQueue.push("Data loaded successfully.");
     cv.notify_one();
 }
-// Background Calculations
+
 void backgroundCalculation() {
-    std::this_thread::sleep_for(std::chrono::seconds(1)); 
+    // Perform some background calculations
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulating work
     std::lock_guard<std::mutex> lk(mtx);
     for (auto& driver : drivers) {
-        // Placeholder
+        // hypothetical update to driver stats
     }
     logQueue.push("Background calculation completed.");
     cv.notify_one();
@@ -116,15 +118,14 @@ int main() {
             validTrack = true;
         }
     }
-    //Thread initialization for various tasks
-    std::thread logThread(logThreadFunction);  
-    std::thread loaderThread(dataLoaderFunction);  
-    std::thread calculationThread(backgroundCalculation);  
+
+    std::thread logThread(logThreadFunction);  // Start the logging thread
+    std::thread loaderThread(dataLoaderFunction);  // Start the data loading thread
+    std::thread calculationThread(backgroundCalculation);  // Start the background calculation thread
 
     loaderThread.join();
 
     Track selectedTrack = tracks[trackChoice - 1];
-    
     // User starting grid order
     std::cout << "Enter the number for drivers in the starting grid order:\n";
     for (const auto& driver : drivers) {
@@ -149,8 +150,9 @@ int main() {
             --i; 
         }
     }
-    // Race simulation
+
     std::vector<std::pair<std::string, std::pair<double, std::vector<double>>>> driverTimes;
+    // Race Simulation
     for (auto& driver : startingGrid) {
         double totalRaceTime = 0;
         std::vector<double> lapTimes;
