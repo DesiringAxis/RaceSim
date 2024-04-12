@@ -7,6 +7,10 @@
 #include <numeric>
 #include <sstream>
 #include <iomanip>
+#include <queue>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 #include "Track.h"
 #include "Driver.h"
 
@@ -29,11 +33,72 @@ std::string convertTime(double totalTimeInSeconds) {
     return oss.str();
 }
 
+std::queue<std::string> logMessages;
+std::map<std::string, std::string> configSettings;
+
+void logMessage(const std::string& message) {
+    logMessages.push(message);
+}
+
+void processLogQueue() {
+    while (!logMessages.empty()) {
+        std::cout << "Log: " << logMessages.front() << std::endl;
+        logMessages.pop();
+    }
+}
+
+std::vector<Driver> drivers;
+std::vector<Track> tracks;
+std::queue<std::string> logQueue;
+std::mutex mtx;
+std::condition_variable cv;
+
+void logThreadFunction() {
+    std::string message;
+    while (true) {
+        std::unique_lock<std::mutex> lk(mtx);
+        cv.wait(lk, []{ return !logQueue.empty(); });
+        message = logQueue.front();
+        logQueue.pop();
+        std::cout << "Log: " << message << std::endl;
+        if (message == "Exit") break;
+    }
+}
+
+void dataLoaderFunction() {
+    // Simulate data loading
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulating delay
+    std::lock_guard<std::mutex> lk(mtx);
+    drivers = initializeDrivers(); // Assuming this function is thread-safe
+    tracks = initializeTracks();   // Assuming this function is thread-safe
+    logQueue.push("Data loaded successfully.");
+    cv.notify_one();
+}
+
+void backgroundCalculation() {
+    // Perform some background calculations
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // Simulating work
+    std::lock_guard<std::mutex> lk(mtx);
+    for (auto& driver : drivers) {
+        // hypothetical update to driver stats
+    }
+    logQueue.push("Background calculation completed.");
+    cv.notify_one();
+}
+
 int main() {
     double Var = 0.0;
     static int Static = 0;
+    configSettings["track_default"] = "Silverstone";
+    configSettings["race_laps"] = "52";
+
+    logMessage("Application started.");
     auto tracks = initializeTracks();
     auto drivers = initializeDrivers();
+
+    logMessage("Tracks and drivers initialized.");
+
+    processLogQueue();  // Process and display log messages
 
     int trackChoice = 0;
     bool validTrack = false;
@@ -53,6 +118,12 @@ int main() {
             validTrack = true;
         }
     }
+
+    std::thread logThread(logThreadFunction);  // Start the logging thread
+    std::thread loaderThread(dataLoaderFunction);  // Start the data loading thread
+    std::thread calculationThread(backgroundCalculation);  // Start the background calculation thread
+
+    loaderThread.join();
 
     Track selectedTrack = tracks[trackChoice - 1];
     // User starting grid order
@@ -104,6 +175,8 @@ int main() {
     std::sort(driverTimes.begin(), driverTimes.end(), [](const auto& a, const auto& b) {
         return a.second.first < b.second.first;
     });
+
+    calculationThread.join();
     
     char showDetails;
     std::cout << "Do you want to see detailed lap times for each driver? (Y/N): ";
@@ -129,5 +202,15 @@ int main() {
         double averageLapTime = totalLapTime / nestedPair.second.size();
         std::cout << "Average Lap: " << convertTime(averageLapTime) << "\n";
     }
+
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        logQueue.push("Exit");
+        cv.notify_one();
+    }
+
+    logThread.join();
+
+    std::cout << "Program exiting cleanly.\n";
     return 0;
 }
